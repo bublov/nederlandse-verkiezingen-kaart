@@ -1,0 +1,24 @@
+{
+  "nl": {
+    "election": "Verkiezing",
+    "electionType": "Type",
+    "electionSelection": "Jaar",
+    "language": "Taal",
+    "dutch": "Nederlands",
+    "english": "Engels",
+    "general": "Tweede Kamer",
+    "loadingElections": "Verkiezingen laden...",
+    "loadElectionsError": "Verkiezingen konden niet worden geladen."
+  },
+  "en": {
+    "election": "Election",
+    "electionType": "Type",
+    "electionSelection": "Year",
+    "language": "Language",
+    "dutch": "Dutch",
+    "english": "English",
+    "general": "General",
+    "loadingElections": "Loading elections...",
+    "loadElectionsError": "Could not load elections."
+  }
+}

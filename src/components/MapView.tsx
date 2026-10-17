@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, ZoomControl } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 function MapView() {
@@ -8,8 +8,10 @@ function MapView() {
         center={[52.100917, 5.646265]}
         zoom={7.7}
         zoomSnap={0.1}
+        zoomControl={false}
         style={{ height: "100%" }}
       >
+        <ZoomControl position="bottomleft" />
         <TileLayer
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; OpenStreetMap contributors"

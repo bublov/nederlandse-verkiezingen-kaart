@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { LanguageContext } from "./LanguageContext";
 import {
-  loadTranslations,
+  LanguageContext,
   type Language,
-  type TranslationKey,
-  type Translations,
-} from "./translations";
+} from "./LanguageContext";
+
+type Translations = Record<Language, Record<string, string>>;
 
 type LanguageProviderProps = {
   children: ReactNode;
@@ -16,7 +15,16 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   const [translations, setTranslations] = useState<Translations | null>(null);
 
   useEffect(() => {
-    loadTranslations()
+    const translationsUrl = `${import.meta.env.BASE_URL}translations/translations.json`;
+
+    fetch(translationsUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Could not load translations (${response.status}).`);
+        }
+
+        return response.json() as Promise<Translations>;
+      })
       .then(setTranslations)
       .catch((error: unknown) => {
         console.error("Could not load translations.", error);
@@ -27,7 +35,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     () => ({
       language,
       setLanguage,
-      t: (key: TranslationKey) => translations?.[language][key] ?? key,
+      t: (key: string) => translations?.[language][key] ?? key,
     }),
     [language, translations],
   );

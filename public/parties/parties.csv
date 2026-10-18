@@ -1,29 +1,29 @@
-id,name,display_name,start_date
-1,PVV (Partij voor de Vrijheid),PVV,2025-10-29
-2,GROENLINKS / Partij van de Arbeid (PvdA),GL/PvdA,2025-10-29
-2,GROENLINKS / Partij van de Arbeid (PvdA),PRO,2026-07-01
-3,VVD,VVD,2025-10-29
-4,Nieuw Sociaal Contract (NSC),NSC,2025-10-29
-5,D66,D66,2025-10-29
-6,BBB,BBB,2025-10-29
-7,CDA,CDA,2025-10-29
-8,SP (Socialistische Partij),SP,2025-10-29
-9,DENK,DENK,2025-10-29
-10,Partij voor de Dieren,PvdD,2025-10-29
-11,Forum voor Democratie,FvD,2025-10-29
-12,Staatkundig Gereformeerde Partij (SGP),SGP,2025-10-29
-13,ChristenUnie,CU,2025-10-29
-14,Volt,Volt,2025-10-29
-15,JA21,JA21,2025-10-29
-16,Vrede voor Dieren,VvD,2025-10-29
-17,Belang Van Nederland (BVNL),BVNL,2025-10-29
-18,BIJ1,BIJ1,2025-10-29
-19,LP (Libertaire Partij),LP,2025-10-29
-20,50PLUS,50+,2025-10-29
-21,Piratenpartij,PPNL,2025-10-29
-22,FNP,FNP,2025-10-29
-23,Vrij Verbond,VV,2025-10-29
-24,DE LINIE,DL,2025-10-29
-25,NL PLAN,NLPLAN,2025-10-29
-26,ELLECT,ELLECT,2025-10-29
-27,Partij voor de Rechtsstaat,PvdR,2025-10-29
+id,name,display_name,start_date,color
+1,PVV (Partij voor de Vrijheid),PVV,2025-10-29,696969
+2,GROENLINKS / Partij van de Arbeid (PvdA),GL/PvdA,2025-10-29,FF0000
+2,GROENLINKS / Partij van de Arbeid (PvdA),PRO,2026-07-01,FF0000
+3,VVD,VVD,2025-10-29,0000FF
+4,Nieuw Sociaal Contract (NSC),NSC,2025-10-29,
+5,D66,D66,2025-10-29,00FF00
+6,BBB,BBB,2025-10-29,6B8E23
+7,CDA,CDA,2025-10-29,008080
+8,SP (Socialistische Partij),SP,2025-10-29,B01E1E
+9,DENK,DENK,2025-10-29,00B7C3
+10,Partij voor de Dieren,PvdD,2025-10-29,0B6B3A
+11,Forum voor Democratie,FvD,2025-10-29,A52A2A
+12,Staatkundig Gereformeerde Partij (SGP),SGP,2025-10-29,FFA500
+13,ChristenUnie,CU,2025-10-29,00A7E1
+14,Volt,Volt,2025-10-29,00A7E1
+15,JA21,JA21,2025-10-29,4B0082
+16,Vrede voor Dieren,VvD,2025-10-29,
+17,Belang Van Nederland (BVNL),BVNL,2025-10-29,
+18,BIJ1,BIJ1,2025-10-29,
+19,LP (Libertaire Partij),LP,2025-10-29,
+20,50PLUS,50+,2025-10-29,A23BA8
+21,Piratenpartij,PPNL,2025-10-29,
+22,FNP,FNP,2025-10-29,
+23,Vrij Verbond,VV,2025-10-29,
+24,DE LINIE,DL,2025-10-29,
+25,NL PLAN,NLPLAN,2025-10-29,
+26,ELLECT,ELLECT,2025-10-29,
+27,Partij voor de Rechtsstaat,PvdR,2025-10-29,

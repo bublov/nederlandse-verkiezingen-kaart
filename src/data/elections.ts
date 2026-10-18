@@ -9,7 +9,7 @@ export type Election = {
 
 const electionsUrl = `${import.meta.env.BASE_URL}elections/elections.csv`;
 
-function parseCsvLine(line: string) {
+export function parseCsvLine(line: string, separator = ",") {
   const values: string[] = [];
   let value = "";
   let quoted = false;
@@ -23,7 +23,7 @@ function parseCsvLine(line: string) {
       index += 1;
     } else if (character === '"') {
       quoted = !quoted;
-    } else if (character === "," && !quoted) {
+    } else if (character === separator && !quoted) {
       values.push(value);
       value = "";
     } else {

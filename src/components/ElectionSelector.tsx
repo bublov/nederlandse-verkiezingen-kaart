@@ -67,11 +67,7 @@ function ElectionSelector({ onElectionChange }: ElectionSelectorProps) {
       withBorder
       p="md"
       style={{
-        position: "absolute",
-        top: "1rem",
-        left: "1rem",
-        zIndex: 1100,
-        width: "min(32rem, calc(100vw - 2rem))",
+        width: "100%",
       }}
     >
       <Stack gap="sm">

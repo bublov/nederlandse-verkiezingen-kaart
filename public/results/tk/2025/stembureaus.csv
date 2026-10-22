@@ -1,4 +1,4 @@
-﻿GemeenteNaam,StembureauCode,CBS gemeentecode,Postcode,StembureauNaam,Naam stembureau,Straatnaam,Huisnummer,Huisletter,Huisnummertoevoeging,Plaats,Latitude,Longitude
+GemeenteNaam,StembureauCode,CBS gemeentecode,Postcode,StembureauNaam,Naam stembureau,Straatnaam,Huisnummer,Huisletter,Huisnummertoevoeging,Plaats,Latitude,Longitude
 Groningen,SB100,GM0014,9712HN,Stembureau Stadhuis (postcode: 9712 HN),Stadhuis,Grote Markt,1,,,Groningen,53.21856895111204,6.567196134120696
 Groningen,SB101,GM0014,9712HN,Stembureau Stadhuis (postcode: 9712 HN),Stadhuis,Grote Markt,1,,,Groningen,53.21856895111204,6.567196134120696
 Groningen,SB102,GM0014,9712HN,Stembureau Stadhuis (postcode: 9712 HN),Stadhuis,Grote Markt,1,,,Groningen,53.21856895111204,6.567196134120696
@@ -10067,13 +10067,17 @@ Voorne aan Zee,SB207,GM1992,3235BK,Stembureau De Welkomkerk (postcode: 3235 BK),
 Voorne aan Zee,SB208,GM1992,3235DZ,Stembureau Stuifakkers (postcode: 3235 DZ),Stuifakkers,Briggemandreef,2,,,Rockanje,51.87420073421112,4.066265367664843
 Voorne aan Zee,SB209,GM1992,3235BV,Stembureau Cultureel Centrum de Merel (postcode: 3235 BV),Sport- en Cultureelcentrum de Merel,W de Waalstraat,3,,,Rockanje,51.873458912549665,4.070048326276675
 Voorne aan Zee,SB210,GM1992,3234KS,Stembureau Tintestein (postcode: 3234 KS),Tintestein,Strypsedijk,48,,,Tinte,51.881271126271876,4.132909463307086
-Bonaire,SB9001,GM9001,,Stembureau Jeugdhuis Jong Bonaire,Stembureau Jeugdhuis Jong Bonaire,,,,,,12.15097,-68.27452
-Bonaire,SB9002,GM9001,,Stembureau Sentro di bario Tera Cora,Stembureau Sentro di bario Tera Cora,,,,,,12.13819,-68.2648
-Bonaire,SB9003,GM9001,,Stembureau Sentro di bario Nikiboko,Stembureau Sentro di bario Nikiboko,,,,,,12.14699,-68.26277
-Bonaire,SB9004,GM9001,,Stembureau Sentro di bario Amboina,Stembureau Sentro di bario Amboina,,,,,,12.15584,-68.25978
-Bonaire,SB9005,GM9001,,Stembureau Kompleho Deportivo J. Nicolaas,Stembureau Kompleho Deportivo J. Nicolaas,,,,,,12.16903,-68.28158
-Bonaire,SB9006,GM9001,,Stembureau Sentro di bario Nort di Salina,Stembureau Sentro di bario Nort di Salina,,,,,,12.17673,-68.2738
-Bonaire,SB9007,GM9001,,Stembureau Sociedad San Antonio de Padua,Stembureau Sociedad San Antonio de Padua,,,,,,12.23707,-68.33191
-Sint Eustatius,SB1,GM9002,,Stembureau The Ernest van Putten Youth Center (Lions Den),Stembureau The Ernest van Putten Youth Center (Lions Den),,,,,,17.49351,-62.97917
-Saba,SB1,GM9003,,Stembureau The Bottom,Stembureau The Bottom,,,,,,17.62625,-63.24876
-Saba,SB2,GM9003,,Stembureau Winwardside,Stembureau Winwardside,,,,,,17.62881,-63.23218
+Bonaire,SB9001,GM9001,,Stembureau Jeugdhuis Jong Bonaire,Stembureau Jeugdhuis Jong Bonaire,,,,,,,
+Bonaire,SB9002,GM9001,,Stembureau Sentro di bario Tera Cora,Stembureau Sentro di bario Tera Cora,,,,,,,
+Bonaire,SB9003,GM9001,,Stembureau Sentro di bario Nikiboko,Stembureau Sentro di bario Nikiboko,,,,,,,
+Bonaire,SB9004,GM9001,,Stembureau Sentro di bario Amboina,Stembureau Sentro di bario Amboina,,,,,,,
+Bonaire,SB9005,GM9001,,Stembureau Kompleho Deportivo J. Nicolaas,Stembureau Kompleho Deportivo J. Nicolaas,,,,,,,
+Bonaire,SB9006,GM9001,,Stembureau Sentro di bario Nort di Salina,Stembureau Sentro di bario Nort di Salina,,,,,,,
+Bonaire,SB9007,GM9001,,Stembureau Sociedad San Antonio de Padua,Stembureau Sociedad San Antonio de Padua,,,,,,,
+Sint Eustatius,SB1,GM9002,,Stembureau The Ernest van Putten Youth Center (Lions Den),Stembureau The Ernest van Putten Youth Center (Lions Den),,,,,,,
+Saba,SB1,GM9003,,Stembureau The Bottom,Stembureau The Bottom,,,,,,,
+Saba,SB2,GM9003,,Stembureau Winwardside,Stembureau Winwardside,,,,,,,
+NBSB,SB1,,,Stembureau Land Aruba te Oranjestad,SB1,,,,,,,
+NBSB,SB2,,,Stembureau Land Cura?ao te Willemstad,SB2,,,,,,,
+NBSB,SB3,,,Stembureau Land Sint Maarten te Philipsburg,SB3,,,,,,,
+NBSB,SB4,,,Stembureau Land Nederland te Den Haag,SB4,,,,,,,

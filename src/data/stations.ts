@@ -4,6 +4,7 @@ import type { Election } from "./elections";
 export type Station = {
   name: string;
   municipality: string;
+  municipalityCode: string;
   code: string;
   latitude: number;
   longitude: number;
@@ -20,8 +21,91 @@ export type Station = {
     color: string;
     votes: number;
     previousVotes?: number;
+    seats?: number;
   }>;
+  isNational?: boolean;
+  isAggregate?: boolean;
 };
+
+export type Municipality = Station;
+export type Province = Station;
+
+function allocateSeats(votes: Station["votes"][number][], seats = 150) {
+  const allocated = new Map(votes.map((vote) => [vote.partyId, 0]));
+  for (let seat = 0; seat < seats; seat += 1) {
+    const winner = votes
+      .map((vote) => ({
+        partyId: vote.partyId,
+        quotient: vote.votes / ((allocated.get(vote.partyId) ?? 0) + 1),
+      }))
+      .sort(
+        (left, right) =>
+          right.quotient - left.quotient ||
+          Number(left.partyId) - Number(right.partyId),
+      )[0];
+    if (winner) {
+      allocated.set(winner.partyId, (allocated.get(winner.partyId) ?? 0) + 1);
+    }
+  }
+  return allocated;
+}
+
+export function aggregateNational(stations: Station[]): Station {
+  const first = stations[0]!;
+  const votesByParty = new Map<string, Station["votes"][number]>();
+  let previousTotalVotes = 0;
+  let hasPrevious = false;
+  stations.forEach((station) => {
+    previousTotalVotes += station.previousTotalVotes ?? 0;
+    hasPrevious ||= station.previousTotalVotes !== undefined;
+    station.votes.forEach((vote) => {
+      const existing = votesByParty.get(vote.partyId);
+      if (existing) {
+        existing.votes += vote.votes;
+        existing.previousVotes =
+          existing.previousVotes === undefined &&
+          vote.previousVotes === undefined
+            ? undefined
+            : (existing.previousVotes ?? 0) + (vote.previousVotes ?? 0);
+      } else {
+        votesByParty.set(vote.partyId, { ...vote });
+      }
+    });
+  });
+  const votes = [...votesByParty.values()].sort(
+    (left, right) => right.votes - left.votes,
+  );
+  const winner = votes[0];
+  const seats = allocateSeats(votes);
+  votes.forEach((vote) => {
+    vote.seats = seats.get(vote.partyId) ?? 0;
+  });
+  return {
+    ...first,
+    name: "Nederland",
+    municipality: "Nederland",
+    municipalityCode: "",
+    code: "national",
+    latitude: Number.NaN,
+    longitude: Number.NaN,
+    winnerColor: winner?.color ?? defaultColor,
+    winnerPartyId: winner?.partyId ?? "",
+    winnerDisplayName: winner?.displayName ?? "Unknown",
+    totalVotes: votes.reduce((sum, vote) => sum + vote.votes, 0),
+    previousTotalVotes: hasPrevious ? previousTotalVotes : undefined,
+    votes,
+    isNational: true,
+    isAggregate: true,
+  };
+}
+
+export function isMapVisibleStation(station: Station) {
+  return (
+    !station.municipalityCode.startsWith("GM9") &&
+    Number.isFinite(station.latitude) &&
+    Number.isFinite(station.longitude)
+  );
+}
 
 type Party = {
   id: string;
@@ -137,6 +221,7 @@ export async function loadStations(
           row.StembureauCode?.trim() ||
           "Polling station",
         municipality: row.GemeenteNaam,
+        municipalityCode: row["CBS gemeentecode"],
         code: row.StembureauCode,
         latitude: Number(row.Latitude),
         longitude: Number(row.Longitude),
@@ -158,8 +243,119 @@ export async function loadStations(
         votes: stationVotes,
       };
     })
-    .filter(
-      (station) =>
-        Number.isFinite(station.latitude) && Number.isFinite(station.longitude),
+}
+
+export function aggregateMunicipalities(stations: Station[]): Municipality[] {
+  const grouped = new Map<string, Station[]>();
+  stations.forEach((station) => {
+    const items = grouped.get(station.municipalityCode) ?? [];
+    items.push(station);
+    grouped.set(station.municipalityCode, items);
+  });
+
+  return [...grouped.values()].map((items) => {
+    const first = items[0]!;
+    const votesByParty = new Map<string, Station["votes"][number]>();
+    let previousTotalVotes = 0;
+    let hasPrevious = false;
+    items.forEach((station) => {
+      previousTotalVotes += station.previousTotalVotes ?? 0;
+      hasPrevious ||= station.previousTotalVotes !== undefined;
+      station.votes.forEach((vote) => {
+        const existing = votesByParty.get(vote.partyId);
+        if (existing) {
+          existing.votes += vote.votes;
+          existing.previousVotes =
+            existing.previousVotes === undefined &&
+            vote.previousVotes === undefined
+              ? undefined
+              : (existing.previousVotes ?? 0) + (vote.previousVotes ?? 0);
+        } else {
+          votesByParty.set(vote.partyId, { ...vote });
+        }
+
+      });
+    });
+    const votes = [...votesByParty.values()].sort(
+      (left, right) => right.votes - left.votes,
     );
+    const winner = votes[0];
+    return {
+      ...first,
+      name: first.municipality,
+      code: first.municipalityCode,
+      latitude:
+        items.reduce((sum, station) => sum + station.latitude, 0) / items.length,
+      longitude:
+        items.reduce((sum, station) => sum + station.longitude, 0) /
+        items.length,
+      winnerColor: winner?.color ?? defaultColor,
+      winnerPartyId: winner?.partyId ?? "",
+      winnerDisplayName: winner?.displayName ?? "Unknown",
+      totalVotes: votes.reduce((sum, vote) => sum + vote.votes, 0),
+      previousTotalVotes: hasPrevious ? previousTotalVotes : undefined,
+      votes,
+      isAggregate: true,
+    };
+  });
+}
+
+export function aggregateProvinces(
+  stations: Station[],
+  municipalityToProvince: Map<string, string>,
+): Province[] {
+  const grouped = new Map<string, Station[]>();
+  stations.forEach((station) => {
+    const province = municipalityToProvince.get(station.municipalityCode);
+    if (!province) return;
+    const items = grouped.get(province) ?? [];
+    items.push(station);
+    grouped.set(province, items);
+  });
+
+  return [...grouped.entries()].map(([province, items]) => {
+    const first = items[0]!;
+    const votesByParty = new Map<string, Station["votes"][number]>();
+    let previousTotalVotes = 0;
+    let hasPrevious = false;
+    items.forEach((station) => {
+      previousTotalVotes += station.previousTotalVotes ?? 0;
+      hasPrevious ||= station.previousTotalVotes !== undefined;
+      station.votes.forEach((vote) => {
+        const existing = votesByParty.get(vote.partyId);
+        if (existing) {
+          existing.votes += vote.votes;
+          existing.previousVotes =
+            existing.previousVotes === undefined &&
+            vote.previousVotes === undefined
+              ? undefined
+              : (existing.previousVotes ?? 0) + (vote.previousVotes ?? 0);
+        } else {
+          votesByParty.set(vote.partyId, { ...vote });
+        }
+      });
+    });
+    const votes = [...votesByParty.values()].sort(
+      (left, right) => right.votes - left.votes,
+    );
+    const winner = votes[0];
+    return {
+      ...first,
+      name: province,
+      municipality: province,
+      code: province,
+      latitude:
+        items.reduce((sum, station) => sum + station.latitude, 0) / items.length,
+      longitude:
+        items.reduce((sum, station) => sum + station.longitude, 0) /
+        items.length,
+      winnerColor: winner?.color ?? defaultColor,
+      winnerPartyId: winner?.partyId ?? "",
+      winnerDisplayName: winner?.displayName ?? "Unknown",
+      totalVotes: votes.reduce((sum, vote) => sum + vote.votes, 0),
+      previousTotalVotes: hasPrevious ? previousTotalVotes : undefined,
+      votes,
+      isAggregate: true,
+    };
+  });
 }

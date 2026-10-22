@@ -3,13 +3,17 @@ import { useState } from "react";
 import { useTranslation } from "../i18n/useTranslation";
 
 type ElectionMenuProps = {
-  onLevelChange?: (level: "pollingStation") => void;
+  onLevelChange?: (
+    level: "national" | "pollingStation" | "municipality" | "province",
+  ) => void;
   onViewChange?: (view: "winner") => void;
 };
 
 function ElectionMenu({ onLevelChange, onViewChange }: ElectionMenuProps) {
   const { t } = useTranslation();
-  const [selectedLevel, setSelectedLevel] = useState("pollingStation");
+  const [selectedLevel, setSelectedLevel] = useState<
+    "national" | "pollingStation" | "municipality" | "province"
+  >("pollingStation");
   const [selectedView, setSelectedView] = useState("winner");
 
   return (
@@ -20,14 +24,31 @@ function ElectionMenu({ onLevelChange, onViewChange }: ElectionMenuProps) {
             <Button
               size="sm"
               variant={selectedLevel === "national" ? "filled" : "light"}
-              disabled
+              onClick={() => {
+                setSelectedLevel("national");
+                onLevelChange?.("national");
+              }}
             >
               {t("national")}
             </Button>
-            <Button size="sm" variant="light" disabled>
+            <Button
+              size="sm"
+              variant={selectedLevel === "province" ? "filled" : "light"}
+              onClick={() => {
+                setSelectedLevel("province");
+                onLevelChange?.("province");
+              }}
+            >
               {t("province")}
             </Button>
-            <Button size="sm" variant="light" disabled>
+            <Button
+              size="sm"
+              variant={selectedLevel === "municipality" ? "filled" : "light"}
+              onClick={() => {
+                setSelectedLevel("municipality");
+                onLevelChange?.("municipality");
+              }}
+            >
               {t("municipality")}
             </Button>
             <Button

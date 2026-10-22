@@ -5,12 +5,16 @@ import { useTranslation } from "../i18n/useTranslation";
 
 type WinnerLegendProps = {
   stations: Station[];
+  titleKey: "winnerByNational" | "winnerByPollingStation" | "winnerByMunicipality" | "winnerByProvince";
+  level: "national" | "pollingStation" | "municipality" | "province";
   onStationsSelect: (stations: Station[]) => void;
   onStationSelect: (station: Station) => void;
 };
 
 function WinnerLegend({
   stations,
+  titleKey,
+  level,
   onStationsSelect,
   onStationSelect,
 }: WinnerLegendProps) {
@@ -83,7 +87,7 @@ function WinnerLegend({
     >
       <Stack gap="xs">
         <Text size="sm" fw={600}>
-          {t("winnerByPollingStation")}
+          {t(titleKey)}
         </Text>
         <TextInput
           placeholder={t("search")}
@@ -99,25 +103,18 @@ function WinnerLegend({
                 style={{ textAlign: "left", padding: "0.25rem" }}
               >
                 <Text size="sm">{municipality}</Text>
-                <Text size="xs" c="dimmed">
-                  {municipalityStations.length} {t("pollingStations")}
-                </Text>
               </UnstyledButton>
             ))}
-            {matchingStations.map((station) => (
-              <UnstyledButton
-                key={`${station.municipality}-${station.code}`}
-                onClick={() => onStationSelect(station)}
-                style={{ textAlign: "left", padding: "0.25rem" }}
-              >
-                <Text size="sm">{station.name}</Text>
-                <Text size="xs" c="dimmed">
-                  {[station.municipality, station.address, station.postcode]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </Text>
-              </UnstyledButton>
-            ))}
+            {level === "pollingStation" &&
+              matchingStations.map((station) => (
+                <UnstyledButton
+                  key={`${station.municipality}-${station.code}`}
+                  onClick={() => onStationSelect(station)}
+                  style={{ textAlign: "left", padding: "0.25rem" }}
+                >
+                  <Text size="sm">{station.name}</Text>
+                </UnstyledButton>
+              ))}
           </>
         ) : rows.map(([partyId, winner]) => (
           <div

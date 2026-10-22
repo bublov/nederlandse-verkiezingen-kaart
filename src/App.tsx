@@ -13,7 +13,9 @@ import StationDetails from "./components/StationDetails";
 
 function App() {
   const [selectedElection, setSelectedElection] = useState<Election>();
-  const [selectedLevel, setSelectedLevel] = useState<"pollingStation">(
+  const [selectedLevel, setSelectedLevel] = useState<
+    "national" | "pollingStation" | "municipality" | "province"
+  >(
     "pollingStation",
   );
   const [selectedView, setSelectedView] = useState<"winner">("winner");
@@ -25,6 +27,14 @@ function App() {
     selectedElection?.label === "forecastPollingAverage"
       ? elections.find((election) => election.id === "1")
       : undefined;
+  const winnerTitleKey =
+    selectedLevel === "national"
+      ? "winnerByNational"
+      : selectedLevel === "municipality"
+        ? "winnerByMunicipality"
+        : selectedLevel === "province"
+          ? "winnerByProvince"
+          : "winnerByPollingStation";
 
   return (
     <MantineProvider>
@@ -36,6 +46,8 @@ function App() {
             view={selectedView}
             onStationsLoaded={setStations}
             onStationClick={setSelectedStation}
+            onMunicipalityClick={setSelectedStation}
+            onProvinceClick={setSelectedStation}
             focusStations={focusStations}
             comparisonElection={comparisonElection}
           />
@@ -58,19 +70,26 @@ function App() {
               onElectionsLoaded={setElections}
             />
             <ElectionMenu
-              onLevelChange={setSelectedLevel}
+              onLevelChange={(level) => {
+                setSelectedLevel(level);
+                setSelectedStation(undefined);
+                setFocusStations(undefined);
+              }}
               onViewChange={setSelectedView}
             />
           </div>
           <LanguagePicker />
-          {selectedStation ? (
+          {selectedStation || selectedLevel === "national" ? (
             <StationDetails
-              station={selectedStation}
+              station={selectedStation ?? stations[0]!}
               onClose={() => setSelectedStation(undefined)}
+              showClose={selectedLevel !== "national"}
             />
           ) : (
             <WinnerLegend
               stations={stations}
+              titleKey={winnerTitleKey}
+              level={selectedLevel}
               onStationsSelect={setFocusStations}
               onStationSelect={(station) => {
                 setSelectedStation(station);

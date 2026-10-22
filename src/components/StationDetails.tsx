@@ -5,19 +5,22 @@ import { useTranslation } from "../i18n/useTranslation";
 type StationDetailsProps = {
   station: Station;
   onClose: () => void;
+  showClose?: boolean;
 };
 
-function StationDetails({ station, onClose }: StationDetailsProps) {
+function StationDetails({ station, onClose, showClose = true }: StationDetailsProps) {
   const { t } = useTranslation();
-  const topVotes = station.votes.slice(0, 9);
-  const otherVotes = station.votes
-    .slice(9)
+  const topVotes = station.isNational
+    ? station.votes.filter((party) => (party.seats ?? 0) >= 1)
+    : station.votes.slice(0, 9);
+  const otherParties = station.isNational
+    ? station.votes.filter((party) => (party.seats ?? 0) === 0)
+    : station.votes.slice(9);
+  const otherVotes = otherParties
     .reduce((sum, party) => sum + party.votes, 0);
-  const otherPreviousVotes = station.votes
-    .slice(9)
+  const otherPreviousVotes = otherParties
     .reduce((sum, party) => sum + (party.previousVotes ?? 0), 0);
-  const hasOtherPreviousVotes = station.votes
-    .slice(9)
+  const hasOtherPreviousVotes = otherParties
     .some((party) => party.previousVotes !== undefined);
   const rows = [
     ...topVotes,
@@ -63,23 +66,44 @@ function StationDetails({ station, onClose }: StationDetailsProps) {
         <div style={{ display: "flex", alignItems: "start" }}>
           <div style={{ flex: 1 }}>
             <Text fw={700}>{station.name}</Text>
-            <Text size="sm" c="dimmed">
-              {[station.municipality, station.address, station.postcode]
-                .filter(Boolean)
-                .join(" · ")}
-            </Text>
+            {!station.isAggregate && (
+              <Text size="sm" c="dimmed">
+                {[station.municipality, station.address, station.postcode]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </Text>
+            )}
           </div>
-          <ActionIcon
-            variant="subtle"
-            aria-label={t("close")}
-            onClick={onClose}
-          >
-            ×
-          </ActionIcon>
+          {showClose && (
+            <ActionIcon
+              variant="subtle"
+              aria-label={t("close")}
+              onClick={onClose}
+            >
+              ×
+            </ActionIcon>
+          )}
         </div>
         <Text size="sm">
           {station.totalVotes.toLocaleString()} {t("votesCast")}
         </Text>
+        {station.isNational && (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "minmax(6rem, 1fr) 1.5fr 3rem 4rem 4.5rem",
+              gap: "0.5rem",
+              color: "var(--mantine-color-dimmed)",
+              fontSize: "var(--mantine-font-size-xs)",
+            }}
+          >
+            <span />
+            <span />
+            <span>{t("seats")}</span>
+            <span>{t("share")}</span>
+            <span>{t("change")}</span>
+          </div>
+        )}
         {rows.map((party) => {
           const percentage =
             station.totalVotes === 0
@@ -98,7 +122,9 @@ function StationDetails({ station, onClose }: StationDetailsProps) {
               key={party.displayName}
               style={{
                 display: "grid",
-                gridTemplateColumns: "minmax(6rem, 1fr) 1.5fr 4rem 4.5rem",
+                gridTemplateColumns: station.isNational
+                  ? "minmax(6rem, 1fr) 1.5fr 3rem 4rem 4.5rem"
+                  : "minmax(6rem, 1fr) 1.5fr 4rem 4.5rem",
                 alignItems: "center",
                 gap: "0.5rem",
               }}
@@ -144,6 +170,11 @@ function StationDetails({ station, onClose }: StationDetailsProps) {
                   }}
                 />
               </div>
+              {station.isNational && (
+                <Text size="sm" ta="right">
+                  {"seats" in party ? party.seats : undefined}
+                </Text>
+              )}
               <Text size="sm" ta="right">
                 {percentage.toFixed(1)}%
               </Text>

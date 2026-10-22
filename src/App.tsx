@@ -19,6 +19,12 @@ function App() {
   const [selectedView, setSelectedView] = useState<"winner">("winner");
   const [stations, setStations] = useState<Station[]>([]);
   const [selectedStation, setSelectedStation] = useState<Station>();
+  const [focusStations, setFocusStations] = useState<Station[]>();
+  const [elections, setElections] = useState<Election[]>([]);
+  const comparisonElection =
+    selectedElection?.label === "forecastPollingAverage"
+      ? elections.find((election) => election.id === "1")
+      : undefined;
 
   return (
     <MantineProvider>
@@ -30,6 +36,8 @@ function App() {
             view={selectedView}
             onStationsLoaded={setStations}
             onStationClick={setSelectedStation}
+            focusStations={focusStations}
+            comparisonElection={comparisonElection}
           />
           <div
             style={{
@@ -38,9 +46,17 @@ function App() {
               left: "1rem",
               zIndex: 1100,
               width: "min(32rem, calc(100vw - 2rem))",
+              maxHeight: "calc(100vh - 2rem)",
+              overflowY: "auto",
             }}
           >
-            <ElectionSelector onElectionChange={setSelectedElection} />
+            <ElectionSelector
+              onElectionChange={(election) => {
+                setSelectedElection(election);
+                  setFocusStations(undefined);
+              }}
+              onElectionsLoaded={setElections}
+            />
             <ElectionMenu
               onLevelChange={setSelectedLevel}
               onViewChange={setSelectedView}
@@ -53,7 +69,14 @@ function App() {
               onClose={() => setSelectedStation(undefined)}
             />
           ) : (
-            <WinnerLegend stations={stations} />
+            <WinnerLegend
+              stations={stations}
+              onStationsSelect={setFocusStations}
+              onStationSelect={(station) => {
+                setSelectedStation(station);
+                setFocusStations([station]);
+              }}
+            />
           )}
         </div>
       </LanguageProvider>

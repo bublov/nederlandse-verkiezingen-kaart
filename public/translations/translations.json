@@ -3,6 +3,7 @@
     "election": "Verkiezing",
     "electionType": "Type",
     "electionSelection": "Jaar",
+    "forecastPollingAverage": "Voorspelling (gemiddelde van de peilingen)",
     "language": "Taal",
     "dutch": "Nederlands",
     "english": "Engels",
@@ -11,20 +12,23 @@
     "province": "Provincie",
     "municipality": "Gemeente",
     "pollingStation": "Stembureau",
-    "winner": "Winnaar",
+    "winner": "Grootste",
     "share": "Aandeel",
     "change": "Verschil",
-    "winnerByPollingStation": "Winnaars per stembureau",
+    "winnerByPollingStation": "Grootste partij per stembureau",
     "other": "Overig",
     "close": "Sluiten",
     "votesCast": "stemmen uitgebracht",
     "loadingElections": "Verkiezingen laden...",
     "loadElectionsError": "Verkiezingen konden niet worden geladen."
+    ,"search": "Zoeken"
+    ,"pollingStations": "stembureaus"
   },
   "en": {
     "election": "Election",
     "electionType": "Type",
     "electionSelection": "Year",
+    "forecastPollingAverage": "Forecast (polling average)",
     "language": "Language",
     "dutch": "Dutch",
     "english": "English",
@@ -36,11 +40,13 @@
     "winner": "Winner",
     "share": "Share",
     "change": "Change",
-    "winnerByPollingStation": "Winners by polling station",
+    "winnerByPollingStation": "Largest party by polling station",
     "other": "Other",
     "close": "Close",
     "votesCast": "votes cast",
     "loadingElections": "Loading elections...",
     "loadElectionsError": "Could not load elections."
+    ,"search": "Search"
+    ,"pollingStations": "polling stations"
   }
 }

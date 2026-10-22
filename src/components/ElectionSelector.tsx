@@ -5,9 +5,13 @@ import { useTranslation } from "../i18n/useTranslation";
 
 type ElectionSelectorProps = {
   onElectionChange?: (election: Election) => void;
+  onElectionsLoaded?: (elections: Election[]) => void;
 };
 
-function ElectionSelector({ onElectionChange }: ElectionSelectorProps) {
+function ElectionSelector({
+  onElectionChange,
+  onElectionsLoaded,
+}: ElectionSelectorProps) {
   const { t } = useTranslation();
   const [elections, setElections] = useState<Election[]>([]);
   const [selectedType, setSelectedType] = useState("general");
@@ -25,6 +29,7 @@ function ElectionSelector({ onElectionChange }: ElectionSelectorProps) {
 
         const firstElection = loadedElections[0]!;
         setElections(loadedElections);
+        onElectionsLoaded?.(loadedElections);
         setSelectedType(firstElection.type);
         setSelectedElectionId(firstElection.id);
       })
@@ -37,7 +42,7 @@ function ElectionSelector({ onElectionChange }: ElectionSelectorProps) {
     return () => {
       active = false;
     };
-  }, []);
+  }, [onElectionsLoaded]);
 
   const typeOptions = [...new Set(elections.map((election) => election.type))]
     .sort()
@@ -49,7 +54,7 @@ function ElectionSelector({ onElectionChange }: ElectionSelectorProps) {
     .filter((election) => election.type === selectedType)
     .map((election) => ({
       value: election.id,
-      label: election.label,
+      label: t(election.label),
     }));
   const selectedElection = elections.find(
     (election) => election.id === selectedElectionId,

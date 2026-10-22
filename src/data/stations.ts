@@ -8,19 +8,23 @@ export type Station = {
   latitude: number;
   longitude: number;
   winnerColor: string;
+  winnerPartyId: string;
   winnerDisplayName: string;
   postcode: string;
   address: string;
   totalVotes: number;
+  previousTotalVotes?: number;
   votes: Array<{
+    partyId: string;
     displayName: string;
     color: string;
     votes: number;
+    previousVotes?: number;
   }>;
 };
 
 type Party = {
-  name: string;
+  id: string;
   displayName: string;
   color: string;
   startDate: string;
@@ -52,35 +56,45 @@ async function loadCsv(path: string) {
   return response.text();
 }
 
-export async function loadStations(election: Election): Promise<Station[]> {
-  const [stationsCsv, votesCsv, partiesCsv] = await Promise.all([
+function parseVotesByStation(csv: string) {
+  const votes = new Map<string, Map<string, number>>();
+  for (const row of parseRows(csv, ";")) {
+    const key = `${row.GemeenteNaam}|${row.StembureauCode}`;
+    const stationVotes = votes.get(key) ?? new Map<string, number>();
+    stationVotes.set(row.PartijNaam, Number(row.AantalStemmen));
+    votes.set(key, stationVotes);
+  }
+  return votes;
+}
+
+export async function loadStations(
+  election: Election,
+  comparisonElection?: Election,
+): Promise<Station[]> {
+  const [stationsCsv, votesCsv, partiesCsv, comparisonVotesCsv] =
+    await Promise.all([
     loadCsv(election.stembureaus),
     loadCsv(election.stemmen),
     loadCsv("parties/parties.csv"),
+    comparisonElection ? loadCsv(comparisonElection.stemmen) : Promise.resolve(""),
   ]);
 
   const parties = parseRows(partiesCsv, ",").map<Party>((row) => ({
-    name: row.name,
+    id: row.id,
     displayName: row.display_name,
     color: row.color ? `#${row.color}` : defaultColor,
     startDate: row.start_date,
   }));
-  const partiesByName = new Map<string, Party[]>();
+  const partiesById = new Map<string, Party[]>();
   parties.forEach((party) => {
-    for (const name of [party.name, party.displayName]) {
-      const matches = partiesByName.get(name) ?? [];
-      matches.push(party);
-      partiesByName.set(name, matches);
-    }
+    const matches = partiesById.get(party.id) ?? [];
+    matches.push(party);
+    partiesById.set(party.id, matches);
   });
-  const votesByStation = new Map<string, Map<string, number>>();
-
-  for (const row of parseRows(votesCsv, ";")) {
-    const key = `${row.GemeenteNaam}|${row.StembureauCode}`;
-    const votes = votesByStation.get(key) ?? new Map<string, number>();
-    votes.set(row.PartijNaam, Number(row.AantalStemmen));
-    votesByStation.set(key, votes);
-  }
+  const votesByStation = parseVotesByStation(votesCsv);
+  const comparisonVotesByStation = comparisonElection
+    ? parseVotesByStation(comparisonVotesCsv)
+    : new Map<string, Map<string, number>>();
 
   return parseRows(stationsCsv, ",")
     .map((row) => {
@@ -88,7 +102,7 @@ export async function loadStations(election: Election): Promise<Station[]> {
       const votes = votesByStation.get(key) ?? new Map<string, number>();
       const winner = [...votes.entries()].sort((left, right) => right[1] - left[1])[0];
       const party = winner
-        ? partiesByName
+        ? partiesById
             .get(winner[0])
             ?.filter((candidate) => candidate.startDate <= election.date)
             .sort((left, right) =>
@@ -96,18 +110,22 @@ export async function loadStations(election: Election): Promise<Station[]> {
             )[0]
         : undefined;
       const stationVotes = [...votes.entries()]
-        .map(([partyName, count]) => {
-          const matchingParty = partiesByName
-            .get(partyName)
+        .map(([partyId, count]) => {
+          const matchingParty = partiesById
+            .get(partyId)
             ?.filter((candidate) => candidate.startDate <= election.date)
             .sort((left, right) =>
               right.startDate.localeCompare(left.startDate),
             )[0];
 
           return {
-            displayName: matchingParty?.displayName ?? partyName,
+            partyId,
+            displayName: matchingParty?.displayName ?? partyId,
             color: matchingParty?.color ?? defaultColor,
             votes: count,
+            previousVotes: comparisonVotesByStation
+              .get(key)
+              ?.get(partyId),
           };
         })
         .sort((left, right) => right.votes - left.votes);
@@ -123,12 +141,20 @@ export async function loadStations(election: Election): Promise<Station[]> {
         latitude: Number(row.Latitude),
         longitude: Number(row.Longitude),
         winnerColor: party?.color ?? defaultColor,
+        winnerPartyId: winner?.[0] ?? "",
         winnerDisplayName: party?.displayName ?? winner?.[0] ?? "Unknown",
         postcode: row.Postcode,
         address: [row.Straatnaam, row.Huisnummer, row.Huisletter]
           .filter(Boolean)
           .join(" "),
         totalVotes: stationVotes.reduce((sum, item) => sum + item.votes, 0),
+        previousTotalVotes: comparisonVotesByStation
+          .get(key)
+          ? [...comparisonVotesByStation.get(key)!.values()].reduce(
+              (sum, value) => sum + value,
+              0,
+            )
+          : undefined,
         votes: stationVotes,
       };
     })

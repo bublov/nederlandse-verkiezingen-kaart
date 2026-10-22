@@ -13,17 +13,36 @@ function StationDetails({ station, onClose }: StationDetailsProps) {
   const otherVotes = station.votes
     .slice(9)
     .reduce((sum, party) => sum + party.votes, 0);
+  const otherPreviousVotes = station.votes
+    .slice(9)
+    .reduce((sum, party) => sum + (party.previousVotes ?? 0), 0);
+  const hasOtherPreviousVotes = station.votes
+    .slice(9)
+    .some((party) => party.previousVotes !== undefined);
   const rows = [
     ...topVotes,
     ...(otherVotes > 0
-      ? [{ displayName: t("other"), color: "#b5b2ad", votes: otherVotes }]
+      ? [
+          {
+            displayName: t("other"),
+            color: "#b5b2ad",
+            votes: otherVotes,
+            previousVotes: hasOtherPreviousVotes
+              ? otherPreviousVotes
+              : undefined,
+          },
+        ]
       : []),
   ];
-  const maximumPercentage = rows.reduce((maximum, party) => {
+  const comparisonMaximum = rows.reduce((maximum, party) => {
     const percentage =
       station.totalVotes === 0 ? 0 : (party.votes / station.totalVotes) * 100;
-    return Math.max(maximum, percentage);
-  }, 0);
+    const previousPercentage =
+      !station.previousTotalVotes || party.previousVotes === undefined
+        ? 0
+        : (party.previousVotes / station.previousTotalVotes) * 100;
+    return Math.max(maximum, percentage, previousPercentage);
+  }, 0) * 1.08;
 
   return (
     <Paper
@@ -66,33 +85,80 @@ function StationDetails({ station, onClose }: StationDetailsProps) {
             station.totalVotes === 0
               ? 0
               : (party.votes / station.totalVotes) * 100;
+          const previousPercentage =
+            !station.previousTotalVotes || party.previousVotes === undefined
+              ? undefined
+              : (party.previousVotes / station.previousTotalVotes) * 100;
+          const change =
+            previousPercentage === undefined
+              ? undefined
+              : percentage - previousPercentage;
           return (
             <div
               key={party.displayName}
               style={{
                 display: "grid",
-                gridTemplateColumns: "minmax(7rem, 1fr) 1.5fr 4rem",
+                gridTemplateColumns: "minmax(6rem, 1fr) 1.5fr 4rem 4.5rem",
                 alignItems: "center",
                 gap: "0.5rem",
               }}
             >
               <Text size="sm">{party.displayName}</Text>
-              <div style={{ height: "1rem", background: "#eceae6" }}>
+              <div
+                style={{
+                  position: "relative",
+                  height: "1.1rem",
+                  background: "#eceae6",
+                  overflow: "hidden",
+                }}
+              >
+                {previousPercentage !== undefined && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: `${
+                        comparisonMaximum === 0
+                          ? 0
+                          : (previousPercentage / comparisonMaximum) * 100
+                      }%`,
+                      top: 0,
+                      width: "2px",
+                      height: "100%",
+                      background: "#171717",
+                      transform: "translateX(-1px)",
+                      zIndex: 2,
+                    }}
+                  />
+                )}
                 <div
                   style={{
+                    position: "relative",
                     width: `${
-                      maximumPercentage === 0
+                      comparisonMaximum === 0
                         ? 0
-                        : (percentage / maximumPercentage) * 100
+                        : (percentage / comparisonMaximum) * 100
                     }%`,
                     height: "100%",
                     background: party.color,
+                    zIndex: 1,
                   }}
                 />
               </div>
               <Text size="sm" ta="right">
                 {percentage.toFixed(1)}%
               </Text>
+              {change !== undefined ? (
+                <Text
+                  size="xs"
+                  ta="right"
+                  fw={600}
+                  c={change >= 0 ? "teal" : "red"}
+                >
+                  {change >= 0 ? "↑" : "↓"} {Math.abs(change).toFixed(1)} pp
+                </Text>
+              ) : (
+                <span />
+              )}
             </div>
           );
         })}

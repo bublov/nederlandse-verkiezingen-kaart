@@ -5,7 +5,7 @@ import ElectionSelector from "./components/ElectionSelector";
 import ElectionMenu from "./components/ElectionMenu";
 import LanguagePicker from "./components/LanguagePicker";
 import { LanguageProvider } from "./i18n/LanguageProvider";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { Election } from "./data/elections";
 import type { Station } from "./data/stations";
 import WinnerLegend from "./components/WinnerLegend";
@@ -29,6 +29,11 @@ function App() {
     selectedElection?.label === "forecastPollingAverage"
       ? elections.find((election) => election.id === "1")
       : undefined;
+  const handleElectionChange = useCallback((election: Election) => {
+    setSelectedElection(election);
+    setFocusStations(undefined);
+    setShowWinnerLegend(true);
+  }, []);
   const winnerTitleKey =
     selectedLevel === "national"
       ? "winnerByNational"
@@ -66,11 +71,7 @@ function App() {
             }}
           >
             <ElectionSelector
-              onElectionChange={(election) => {
-                setSelectedElection(election);
-                  setFocusStations(undefined);
-                setShowWinnerLegend(true);
-              }}
+              onElectionChange={handleElectionChange}
               onElectionsLoaded={setElections}
             />
             <ElectionMenu

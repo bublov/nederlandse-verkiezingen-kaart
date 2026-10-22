@@ -103,19 +103,7 @@ function App() {
               }}
               onClose={() => setShowWinnerLegend(false)}
             />
-          ) : (
-            <button
-              type="button"
-              className="winner-legend-reopen"
-              onClick={() => setShowWinnerLegend(true)}
-            >
-              {winnerTitleKey === "winnerByPollingStation"
-                ? "Grootste partij"
-                : winnerTitleKey === "winnerByProvince"
-                  ? "Provincies"
-                  : "Gemeenten"}
-            </button>
-          )}
+          ) : null}
         </div>
       </LanguageProvider>
     </MantineProvider>

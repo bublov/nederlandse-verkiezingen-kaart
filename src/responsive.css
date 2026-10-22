@@ -1,0 +1,53 @@
+@media (max-width: 600px) {
+  .app-controls {
+    top: 0.5rem !important;
+    left: 0.5rem !important;
+    width: calc(100vw - 1rem) !important;
+    max-height: 42vh !important;
+    overflow-y: auto !important;
+  }
+
+  .app-controls > * {
+    padding: 0.7rem !important;
+  }
+
+  .app-language {
+    top: 0.5rem !important;
+    right: 0.5rem !important;
+    width: 8.5rem !important;
+  }
+
+  .app-language + * {
+    margin-top: 0;
+  }
+
+  .winner-legend,
+  .station-details {
+    top: auto !important;
+    right: 0.5rem !important;
+    bottom: 0.5rem !important;
+    left: 0.5rem !important;
+    width: auto !important;
+    max-height: 48vh !important;
+    border-radius: 0.75rem !important;
+  }
+
+  .station-result-row {
+    grid-template-columns: minmax(4.5rem, 0.8fr) 1.2fr 3.4rem 3.8rem !important;
+    gap: 0.3rem !important;
+  }
+
+  .station-result-row.national {
+    grid-template-columns: minmax(4.5rem, 0.8fr) 1.2fr 2.8rem 3.4rem 3.8rem !important;
+  }
+
+  .station-result-row > * {
+    min-width: 0;
+  }
+
+  .station-result-row .mantine-Text-root {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

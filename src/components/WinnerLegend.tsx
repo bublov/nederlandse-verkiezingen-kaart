@@ -72,6 +72,7 @@ function WinnerLegend({
 
   return (
     <Paper
+      className="winner-legend"
       shadow="md"
       withBorder
       p="sm"

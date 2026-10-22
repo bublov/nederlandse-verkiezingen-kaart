@@ -10,6 +10,7 @@ import type { Election } from "./data/elections";
 import type { Station } from "./data/stations";
 import WinnerLegend from "./components/WinnerLegend";
 import StationDetails from "./components/StationDetails";
+import "./responsive.css";
 
 function App() {
   const [selectedElection, setSelectedElection] = useState<Election>();
@@ -52,6 +53,7 @@ function App() {
             comparisonElection={comparisonElection}
           />
           <div
+            className="app-controls"
             style={{
               position: "absolute",
               top: "1rem",

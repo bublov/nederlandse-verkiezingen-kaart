@@ -6,6 +6,7 @@ function LanguagePicker() {
 
   return (
     <Paper
+      className="app-language"
       shadow="md"
       withBorder
       p="xs"

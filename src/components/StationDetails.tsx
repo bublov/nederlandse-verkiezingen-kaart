@@ -49,6 +49,7 @@ function StationDetails({ station, onClose, showClose = true }: StationDetailsPr
 
   return (
     <Paper
+      className="station-details"
       shadow="md"
       withBorder
       p="sm"
@@ -120,6 +121,9 @@ function StationDetails({ station, onClose, showClose = true }: StationDetailsPr
           return (
             <div
               key={party.displayName}
+              className={`station-result-row${
+                station.isNational ? " national" : ""
+              }`}
               style={{
                 display: "grid",
                 gridTemplateColumns: station.isNational

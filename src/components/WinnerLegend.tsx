@@ -113,6 +113,11 @@ function WinnerLegend({
                   style={{ textAlign: "left", padding: "0.25rem" }}
                 >
                   <Text size="sm">{station.name}</Text>
+                  <Text size="xs" c="dimmed">
+                    {[station.municipality, station.address, station.postcode]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </Text>
                 </UnstyledButton>
               ))}
           </>

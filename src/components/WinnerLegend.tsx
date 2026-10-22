@@ -1,4 +1,11 @@
-import { Paper, Stack, Text, TextInput, UnstyledButton } from "@mantine/core";
+import {
+  ActionIcon,
+  Paper,
+  Stack,
+  Text,
+  TextInput,
+  UnstyledButton,
+} from "@mantine/core";
 import { useMemo, useState } from "react";
 import type { Station } from "../data/stations";
 import { useTranslation } from "../i18n/useTranslation";
@@ -9,6 +16,7 @@ type WinnerLegendProps = {
   level: "national" | "pollingStation" | "municipality" | "province";
   onStationsSelect: (stations: Station[]) => void;
   onStationSelect: (station: Station) => void;
+  onClose: () => void;
 };
 
 function WinnerLegend({
@@ -17,6 +25,7 @@ function WinnerLegend({
   level,
   onStationsSelect,
   onStationSelect,
+  onClose,
 }: WinnerLegendProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
@@ -87,9 +96,24 @@ function WinnerLegend({
       }}
     >
       <Stack gap="xs">
-        <Text size="sm" fw={600}>
-          {t(titleKey)}
-        </Text>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text size="sm" fw={600}>
+            {t(titleKey)}
+          </Text>
+          <ActionIcon
+            variant="subtle"
+            aria-label={t("close")}
+            onClick={onClose}
+          >
+            ×
+          </ActionIcon>
+        </div>
         <TextInput
           placeholder={t("search")}
           value={query}

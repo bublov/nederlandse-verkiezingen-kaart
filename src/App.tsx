@@ -22,6 +22,7 @@ function App() {
   const [selectedView, setSelectedView] = useState<"winner">("winner");
   const [stations, setStations] = useState<Station[]>([]);
   const [selectedStation, setSelectedStation] = useState<Station>();
+  const [showWinnerLegend, setShowWinnerLegend] = useState(true);
   const [focusStations, setFocusStations] = useState<Station[]>();
   const [elections, setElections] = useState<Election[]>([]);
   const comparisonElection =
@@ -68,6 +69,7 @@ function App() {
               onElectionChange={(election) => {
                 setSelectedElection(election);
                   setFocusStations(undefined);
+                setShowWinnerLegend(true);
               }}
               onElectionsLoaded={setElections}
             />
@@ -76,6 +78,7 @@ function App() {
                 setSelectedLevel(level);
                 setSelectedStation(undefined);
                 setFocusStations(undefined);
+                setShowWinnerLegend(level !== "national");
               }}
               onViewChange={setSelectedView}
             />
@@ -87,7 +90,7 @@ function App() {
               onClose={() => setSelectedStation(undefined)}
               showClose={selectedLevel !== "national"}
             />
-          ) : (
+          ) : showWinnerLegend ? (
             <WinnerLegend
               stations={stations}
               titleKey={winnerTitleKey}
@@ -97,7 +100,20 @@ function App() {
                 setSelectedStation(station);
                 setFocusStations([station]);
               }}
+              onClose={() => setShowWinnerLegend(false)}
             />
+          ) : (
+            <button
+              type="button"
+              className="winner-legend-reopen"
+              onClick={() => setShowWinnerLegend(true)}
+            >
+              {winnerTitleKey === "winnerByPollingStation"
+                ? "Grootste partij"
+                : winnerTitleKey === "winnerByProvince"
+                  ? "Provincies"
+                  : "Gemeenten"}
+            </button>
           )}
         </div>
       </LanguageProvider>

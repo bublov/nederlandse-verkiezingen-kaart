@@ -1,0 +1,51 @@
+name: Update forecast
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "public/polls/polls.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-forecast
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 1. Targets (poll average -> targets.csv)
+        run: python calculations/targets.py
+
+      - name: 2. Affinity (-> affinity.csv)
+        run: python calculations/affinity.py
+
+      - name: 3. Forecast (-> public/results/tk/forecast/)
+        run: |
+          python calculations/forecast.py \
+            --new-party-donors "28=1:0.6;15:0.2;3:0.1;11:0.1"
+
+      - name: Commit regenerated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/polls/targets.csv \
+                  public/parties/affinity.csv \
+                  public/results/tk/forecast
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update forecast after poll change"
+            git pull --rebase origin main
+            git push
+          fi

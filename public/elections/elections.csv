@@ -1,3 +1,3 @@
 id,type,date,label,stembureaus_data,stemmen_data
 1,general,2025-10-29,2025,results/tk/2025/stembureaus.csv,results/tk/2025/stemmen_per_lijst_per_stembureau.csv
-2,general,2026-10-14,forecastPollingAverage,results/tk/forecast/stembureaus.csv,results/tk/forecast/stemmen_per_lijst_per_stembureau.csv
+2,general,2026-10-23,forecastPollingAverage,results/tk/forecast/stembureaus.csv,results/tk/forecast/stemmen_per_lijst_per_stembureau.csv

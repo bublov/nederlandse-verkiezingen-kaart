@@ -25,10 +25,10 @@ jobs:
           python-version: "3.12"
 
       - name: 1. Targets (poll average -> targets.csv)
-        run: python calculations/targets.py
+        run: python calculations/poll_average.py
 
       - name: 2. Affinity (-> affinity.csv)
-        run: python calculations/affinity.py
+        run: python calculations/party_affinity.py
 
       - name: 3. Forecast (-> public/results/tk/forecast/)
         run: |

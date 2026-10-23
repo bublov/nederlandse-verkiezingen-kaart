@@ -36,7 +36,7 @@ jobs:
           python calculations/forecast.py \
             --new-party-donors "28=1:0.6;15:0.2;3:0.1;11:0.1"
 
-            - name: Commit regenerated data
+      - name: Commit regenerated data
         id: commit
         run: |
           git config user.name "github-actions[bot]"
